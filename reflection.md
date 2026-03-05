@@ -27,6 +27,7 @@ The game was impossible to win, the hints did not help the game development, the
 ```markdown
 **Answer:** 
 I used Claude Sonnet from VS code Copilot. It suggested checking the `check_guess` function and the `get_range_for_difficulty`
+Ii suggested checking the `New Game` button. But it does not explain why it does not reset the game.
 
 ```
 
