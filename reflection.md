@@ -24,6 +24,12 @@ The game was impossible to win, the hints did not help the game development, the
 - Give one example of an AI suggestion that was correct (including what the AI suggested and how you verified the result).
 - Give one example of an AI suggestion that was incorrect or misleading (including what the AI suggested and how you verified the result).
 
+```markdown
+**Answer:** 
+I used Claude Sonnet from VS code Copilot. It suggested checking the `check_guess` function and the `get_range_for_difficulty`
+
+```
+
 ---
 
 ## 3. Debugging and testing your fixes
