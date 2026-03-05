@@ -8,6 +8,14 @@ Answer each question in 3 to 5 sentences. Be specific and honest about what actu
 - List at least two concrete bugs you noticed at the start  
   (for example: "the secret number kept changing" or "the hints were backwards").
 
+
+```markdown
+**Answer:** 
+The game was impossible to win, the hints did not help the game development, they seemed to be swapped. The button `new game` was not working.
+
+```
+
+
 ---
 
 ## 2. How did you use AI as a teammate?
