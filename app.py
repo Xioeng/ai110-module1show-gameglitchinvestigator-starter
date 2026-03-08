@@ -13,7 +13,7 @@ def get_range_for_difficulty(difficulty: str):
     return 1, 100
 
 
-def parse_guess(raw: str):
+def parse_guess(raw: str, low: int, high: int):
     if raw is None:
         return False, None, "Enter a guess."
 
@@ -28,6 +28,8 @@ def parse_guess(raw: str):
     except Exception:
         return False, None, "That is not a number."
 
+    if value < low or value > high:
+        return False, None, f"Guess must be between {low} and {high}."
     return True, value, None
 
 
@@ -51,20 +53,31 @@ def check_guess(guess, secret):
 
 def update_score(current_score: int, outcome: str, attempt_number: int):
     if outcome == "Win":
-        points = 100 - 10 * (attempt_number + 1)
+        points = 100 - 10 * attempt_number
         if points < 10:
             points = 10
         return current_score + points
 
     if outcome == "Too High":
-        if attempt_number % 2 == 0:
-            return current_score + 5
         return current_score - 5
 
     if outcome == "Too Low":
         return current_score - 5
 
     return current_score
+
+
+def reset_game(difficulty):
+    low, high = get_range_for_difficulty(difficulty)
+    st.session_state.attempts = 0
+    st.session_state.secret = random.randint(low, high)  # use difficulty range
+    st.session_state.score = 0
+    st.session_state.status = "playing"
+    st.session_state.history = []
+    st.session_state.hint = ""
+    st.session_state.difficulty = difficulty
+    st.session_state.has_displayed_new_game_message = False
+    st.rerun()
 
 
 st.set_page_config(page_title="Glitchy Guesser", page_icon="🎮")
@@ -96,7 +109,7 @@ if "secret" not in st.session_state:
     st.session_state.secret = random.randint(low, high)
 
 if "attempts" not in st.session_state:
-    st.session_state.attempts = 1
+    st.session_state.attempts = 0
 
 if "score" not in st.session_state:
     st.session_state.score = 0
@@ -109,6 +122,12 @@ if "history" not in st.session_state:
 
 if "hint" not in st.session_state:
     st.session_state.hint = ""
+
+if "difficulty" not in st.session_state:
+    st.session_state.difficulty = difficulty
+
+if "has_displayed_new_game_message" not in st.session_state:
+    st.session_state.has_displayed_new_game_message = False
 
 st.subheader("Make a guess")
 
@@ -134,16 +153,16 @@ with col2:
 with col3:
     show_hint = st.checkbox("Show hint", value=True)
 
-if new_game:
-    st.session_state.attempts = 0
-    st.session_state.secret = random.randint(low, high)  # use difficulty range
-    st.session_state.score = 0
-    st.session_state.status = "playing"
-    st.session_state.history = []
-    st.session_state.hint = ""
-    st.success("New game started.")
-    st.rerun()
+if new_game or st.session_state.difficulty != difficulty:
+    reset_game(difficulty)
 
+if not st.session_state.has_displayed_new_game_message:
+    st.session_state.has_displayed_new_game_message = True
+    st.info(
+        f"New game started! Difficulty: {difficulty}. "
+        f"Guess a number between {low} and {high}. "
+        f"You have {attempt_limit} attempts. Good luck!"
+    )
 
 if show_hint and st.session_state.hint:
     st.warning(st.session_state.hint)
@@ -172,10 +191,10 @@ if submit:
             st.error("Game over. Start a new game to try again.")
         st.stop()
 
-    ok, guess_int, err = parse_guess(raw_guess)
+    ok, guess_int, err = parse_guess(raw_guess, low, high)
 
     if not ok:
-        st.session_state.history.append(raw_guess)
+        # st.session_state.history.append(raw_guess)
         st.error(err)
     else:
         st.session_state.history.append(guess_int)
