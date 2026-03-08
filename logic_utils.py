@@ -46,7 +46,7 @@ def update_score(
         raise ValueError(f"Invalid outcome: {outcome}")
 
     if outcome == "Win":
-        points = 100 - 10 * attempt_number
+        points = 100 - 10 * (attempt_number - 1)
         if points < 10:
             points = 10
         return current_score + points

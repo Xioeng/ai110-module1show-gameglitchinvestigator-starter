@@ -39,6 +39,10 @@ Ii suggested checking the `New Game` button. But it does not explain why it does
 - Describe at least one test you ran (manual or using pytest)  
   and what it showed you about your code.
 - Did AI help you design or understand any tests? How?
+```markdown
+**Answer:**
+Most of the bus were fixed by testing the game manually. The logic behind the functions in `logic_utils.py` were tested using pytest. The tests showed that the logic was correct, but the game was not working as expected. AI helped me understand the tests and design better ones.
+```
 
 ---
 
@@ -47,12 +51,21 @@ Ii suggested checking the `New Game` button. But it does not explain why it does
 - In your own words, explain why the secret number kept changing in the original app.
 - How would you explain Streamlit "reruns" and session state to a friend who has never used Streamlit?
 - What change did you make that finally gave the game a stable secret number?
+```markdown
+**Answer:**
+The secret number kept changing because it was being generated on every rerun of the game, somehow this was intended. I would explain it by saying that Streamlit rerun the script each time there is an interacion. Therefore, flags are required to decide what to print and when. In my opinion, giving a secret that is fixed with the `New Game` button is not the best solution. I thought it'd be better to update it each time the game is initialized.
+```
 
 ---
 
 ## 5. Looking ahead: your developer habits
 
 - What is one habit or strategy from this project that you want to reuse in future labs or projects?
-  - This could be a testing habit, a prompting strategy, or a way you used Git.
+- This could be a testing habit, a prompting strategy, or a way you used Git.
 - What is one thing you would do differently next time you work with AI on a coding task?
 - In one or two sentences, describe how this project changed the way you think about AI generated code.
+`````markdown*
+*Answer:**
+I want to reuse the habit of testing the code manually and using pytest to test, it helps in bigscale projects where features are added but you want to keep certain behavior. I'd say I would do better asking some questions to the AI, I think I was not specific enough in some of my prompts and also it is required to understand what's going under the hood. 
+I think it changed the way by making me ask better questions and keep track of the suggestions but being critical about them, not all suggestions are good and it is required to understand the code to know if the suggestion is good or not.
+```
