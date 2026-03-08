@@ -1,5 +1,7 @@
 import random
+
 import streamlit as st
+
 
 def get_range_for_difficulty(difficulty: str):
     if difficulty == "Easy":
@@ -64,6 +66,7 @@ def update_score(current_score: int, outcome: str, attempt_number: int):
 
     return current_score
 
+
 st.set_page_config(page_title="Glitchy Guesser", page_icon="🎮")
 
 st.title("🎮 Game Glitch Investigator")
@@ -110,7 +113,7 @@ if "hint" not in st.session_state:
 st.subheader("Make a guess")
 
 st.info(
-    f"Guess a number between 1 and 100. "
+    f"Guess a number between {low} and {high}. "
     f"Attempts left: {attempt_limit - st.session_state.attempts}"
 )
 
@@ -121,10 +124,7 @@ with st.expander("Developer Debug Info"):
     st.write("Difficulty:", difficulty)
     st.write("History:", st.session_state.history)
     st.write("Hint:", st.session_state.hint)
-raw_guess = st.text_input(
-    "Enter your guess:",
-    key=f"guess_input_{difficulty}"
-)
+raw_guess = st.text_input("Enter your guess:", key=f"guess_input_{difficulty}")
 
 col1, col2, col3 = st.columns(3)
 with col1:
@@ -144,31 +144,34 @@ if new_game:
     st.success("New game started.")
     st.rerun()
 
-if st.session_state.status != "playing":
-    if st.session_state.status == "won":
-        st.success("You already won. Start a new game to play again.")
-    else:
-        st.error("Game over. Start a new game to try again.")
-    st.stop()
 
 if show_hint and st.session_state.hint:
     st.warning(st.session_state.hint)
+
 if st.session_state.status == "won":
     st.balloons()
     st.success(
-                f"You won! The secret was {st.session_state.secret}. "
-                f"Final score: {st.session_state.score}"
-            )
-    st.stop()
+        f"You won! The secret was {st.session_state.secret}. "
+        f"Final score: {st.session_state.score}"
+    )
+    # st.stop()
 if st.session_state.status == "lost":
     st.error(
-                    f"Out of attempts! "
-                    f"The secret was {st.session_state.secret}. "
-                    f"Score: {st.session_state.score}"
-                )
-    st.stop()
+        f"Out of attempts! "
+        f"The secret was {st.session_state.secret}. "
+        f"Score: {st.session_state.score}"
+    )
+    # st.stop()
+
 
 if submit:
+    if st.session_state.status != "playing":
+        if st.session_state.status == "won":
+            st.success("You already won. Start a new game to play again.")
+        else:
+            st.error("Game over. Start a new game to try again.")
+        st.stop()
+
     st.session_state.attempts += 1
 
     ok, guess_int, err = parse_guess(raw_guess)
