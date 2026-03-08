@@ -135,7 +135,7 @@ with col3:
     show_hint = st.checkbox("Show hint", value=True)
 
 if new_game:
-    st.session_state.attempts = 1
+    st.session_state.attempts = 0
     st.session_state.secret = random.randint(low, high)  # use difficulty range
     st.session_state.score = 0
     st.session_state.status = "playing"
@@ -172,8 +172,6 @@ if submit:
             st.error("Game over. Start a new game to try again.")
         st.stop()
 
-    st.session_state.attempts += 1
-
     ok, guess_int, err = parse_guess(raw_guess)
 
     if not ok:
@@ -181,6 +179,7 @@ if submit:
         st.error(err)
     else:
         st.session_state.history.append(guess_int)
+        st.session_state.attempts += 1
 
         outcome, message = check_guess(guess_int, st.session_state.secret)
 
