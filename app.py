@@ -2,73 +2,11 @@ import random
 
 import streamlit as st
 
-
-def get_range_for_difficulty(difficulty: str):
-    if difficulty == "Easy":
-        return 1, 20
-    if difficulty == "Normal":
-        return 1, 50
-    if difficulty == "Hard":
-        return 1, 100
-    return 1, 100
-
-
-def parse_guess(raw: str, low: int, high: int):
-    if raw is None:
-        return False, None, "Enter a guess."
-
-    if raw == "":
-        return False, None, "Enter a guess."
-
-    try:
-        if "." in raw:
-            value = int(float(raw))
-        else:
-            value = int(raw)
-    except Exception:
-        return False, None, "That is not a number."
-
-    if value < low or value > high:
-        return False, None, f"Guess must be between {low} and {high}."
-    return True, value, None
-
-
-def check_guess(guess, secret):
-    if guess == secret:
-        return "Win", "🎉 Correct!"
-
-    try:
-        if guess > secret:
-            return "Too High", "📉 Go LOWER!"
-        else:
-            return "Too Low", "📈 Go HIGHER!"
-    except TypeError:
-        g = int(guess)
-        if g == secret:
-            return "Win", "🎉 Correct!"
-        if g > secret:
-            return "Too High", "📉 Go LOWER!"
-        return "Too Low", "📈 Go HIGHER!"
-
-
-def update_score(current_score: int, outcome: str, attempt_number: int):
-    if outcome == "Win":
-        points = 100 - 10 * attempt_number
-        if points < 10:
-            points = 10
-        return current_score + points
-
-    if outcome == "Too High":
-        return current_score - 5
-
-    if outcome == "Too Low":
-        return current_score - 5
-
-    return current_score
+import logic_utils
 
 
 def reset_game(difficulty):
-    low, high = get_range_for_difficulty(difficulty)
+    low, high = logic_utils.get_range_for_difficulty(difficulty)
     st.session_state.attempts = 0
     st.session_state.secret = random.randint(low, high)  # use difficulty range
     st.session_state.score = 0
@@ -100,7 +38,7 @@ attempt_limit_map = {
 }
 attempt_limit = attempt_limit_map[difficulty]
 
-low, high = get_range_for_difficulty(difficulty)
+low, high = logic_utils.get_range_for_difficulty(difficulty)
 
 st.sidebar.caption(f"Range: {low} to {high}")
 st.sidebar.caption(f"Attempts allowed: {attempt_limit}")
@@ -191,7 +129,7 @@ if submit:
             st.error("Game over. Start a new game to try again.")
         st.stop()
 
-    ok, guess_int, err = parse_guess(raw_guess, low, high)
+    ok, guess_int, err = logic_utils.parse_guess(raw_guess, low, high)
 
     if not ok:
         # st.session_state.history.append(raw_guess)
@@ -200,12 +138,12 @@ if submit:
         st.session_state.history.append(guess_int)
         st.session_state.attempts += 1
 
-        outcome, message = check_guess(guess_int, st.session_state.secret)
+        outcome, message = logic_utils.check_guess(guess_int, st.session_state.secret)
 
         if show_hint:
             st.session_state.hint = message
 
-        st.session_state.score = update_score(
+        st.session_state.score = logic_utils.update_score(
             current_score=st.session_state.score,
             outcome=outcome,
             attempt_number=st.session_state.attempts,
